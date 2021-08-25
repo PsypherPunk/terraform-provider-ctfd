@@ -3,11 +3,8 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"net/http"
-	"net/http/cookiejar"
-	"net/url"
-	"regexp"
 	"strconv"
 	"time"
 
@@ -22,69 +19,23 @@ type APIResult struct {
 }
 
 func dataSourceChallengesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*apiClient)
+	client := meta.(*api.Client)
 
 	var diags diag.Diagnostics
-
-	//url := strings.TrimRight(client.ctfdUrl, "/")
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	client.httpClient.Jar = jar
-
-	nonceRegex := regexp.MustCompile("'csrfNonce': \"([a-z0-9]+)\",")
-
-	// GET nonce
-	resp, err := client.httpClient.Get("http://0.0.0.0:8000/setup")
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	parts := nonceRegex.FindSubmatch(body)
-	nonce := parts[1]
-
-	// Initial auth.
-	form := url.Values{}
-	form.Set("nonce", string(nonce))
-	form.Set("name", client.ctfdUsername)
-	form.Set("password", client.ctfdPassword)
-	resp, err = client.httpClient.PostForm("http://0.0.0.0:8000/login", form)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	// GET nonce
-	resp, err = client.httpClient.Get("http://0.0.0.0:8000/")
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	body, err = ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	parts = nonceRegex.FindSubmatch(body)
-	nonce = parts[1]
 
 	// GET Challenges
 	req, err := http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/challenges", nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	req.Header.Set("CSRF-Token", string(nonce))
 
-	resp, err = client.httpClient.Do(req)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	result := new(APIResult)
-	err = json.NewDecoder(resp.Body).Decode(result)
+	result, err := client.DoApiRequest(req)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
 	challenges := make([]map[string]interface{}, 0)
-	err = json.Unmarshal(*result.Data, &challenges)
+	err = json.Unmarshal(*result, &challenges)
 	if err != nil {
 		return diag.FromErr(err)
 	}

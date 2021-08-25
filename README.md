@@ -4,6 +4,10 @@ This repository is a built from the
 [`terraform-provider-scaffolding`](https://github.com/hashicorp/terraform-provider-scaffolding)
 GitHub [template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template).
 
+The contents of the `api` package are taken from the
+[`hashicups-client-go`](https://github.com/hashicorp-demoapp/hashicups-client-go)
+demo. API client.
+
 ## Requirements
 
 -	[Terraform](https://www.terraform.io/downloads.html) >= 0.13.x

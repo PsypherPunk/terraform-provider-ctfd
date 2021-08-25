@@ -2,10 +2,10 @@ package provider
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 )
 
 func init() {
@@ -59,14 +59,6 @@ func New(version string) func() *schema.Provider {
 	}
 }
 
-type apiClient struct {
-	httpClient    *http.Client
-	httpUserAgent string
-	ctfdUsername  string
-	ctfdPassword  string
-	ctfdUrl       string
-}
-
 func configure(version string, p *schema.Provider) func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	return func(c context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		ctfdUrl := d.Get("url").(string)
@@ -74,14 +66,11 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 		ctfdPassword := d.Get("password").(string)
 		userAgent := p.UserAgent("terraform-provider-ctfd", version)
 
-		httpClient := http.DefaultClient
+		client, err := api.NewClient(&ctfdUrl, &ctfdUsername, &ctfdPassword, &userAgent)
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
 
-		return &apiClient{
-			httpClient:    httpClient,
-			httpUserAgent: userAgent,
-			ctfdUsername:  ctfdUsername,
-			ctfdPassword:  ctfdPassword,
-			ctfdUrl:       ctfdUrl,
-		}, nil
+		return client, nil
 	}
 }
