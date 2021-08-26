@@ -16,11 +16,13 @@ func (client *Client) setNonce() error {
 	if err != nil {
 		return err
 	}
+
 	body, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
+
 	parts := nonceRegex.FindSubmatch(body)
 	nonce := parts[1]
 	client.Auth.Nonce = string(nonce)
@@ -28,7 +30,7 @@ func (client *Client) setNonce() error {
 	return nil
 }
 
-// SignIn - Get a new token for user
+// SignIn - Authenticate the Admin. user
 func (client *Client) SignIn() error {
 	err := client.setNonce()
 	if err != nil {
@@ -48,7 +50,7 @@ func (client *Client) SignIn() error {
 	return nil
 }
 
-// SignOut - Revoke the token for a user
+// SignOut - Request the logout page
 func (client *Client) SignOut() error {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/logout", client.HostUrl), nil)
 	if err != nil {

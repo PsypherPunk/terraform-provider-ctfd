@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -23,19 +22,7 @@ func dataSourceChallengesRead(ctx context.Context, d *schema.ResourceData, meta 
 
 	var diags diag.Diagnostics
 
-	// GET Challenges
-	req, err := http.NewRequest("GET", "http://0.0.0.0:8000/api/v1/challenges", nil)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	result, err := client.DoApiRequest(req)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	challenges := make([]map[string]interface{}, 0)
-	err = json.Unmarshal(*result, &challenges)
+	challenges, err := client.GetChallenges()
 	if err != nil {
 		return diag.FromErr(err)
 	}
