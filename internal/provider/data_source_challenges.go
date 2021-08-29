@@ -2,20 +2,10 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
-	"strconv"
-	"time"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
-
-type APIResult struct {
-	Success bool             `json:"success"`
-	Message string           `json:"message"`
-	Data    *json.RawMessage `json:"data"`
-}
 
 func dataSourceChallengesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*api.Client)
@@ -31,7 +21,8 @@ func dataSourceChallengesRead(ctx context.Context, d *schema.ResourceData, meta 
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	// TODO: determine based on contents of `challenges`?
+	d.SetId("challenges")
 
 	return diags
 }

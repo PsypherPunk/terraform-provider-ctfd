@@ -1,7 +1,8 @@
 terraform {
   required_providers {
     ctfd = {
-      source = "psypherpunk.io/ctfd/ctfd"
+      source  = "psypherpunk.io/ctfd/ctfd"
+      version = "0.1.0"
     }
   }
 }

@@ -45,11 +45,11 @@ func New(version string) func() *schema.Provider {
 				},
 			},
 			DataSourcesMap: map[string]*schema.Resource{
-				"ctfd_ctfd_instance": dataSourceCtfd(),
-				"ctfd_challenges":    dataSourceChallenges(),
+				"ctfd_challenges": dataSourceChallenges(),
+				"ctfd_teams":      dataSourceTeams(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
-				"ctfd_resource": resourceCtfd(),
+				"ctfd_team": resourceTeam(),
 			},
 		}
 
@@ -70,6 +70,23 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
+
+		err = client.CheckSetup()
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+
+		err = client.SignIn()
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+
+		// TODO: check-if-exists?
+		token, err := client.CreateToken()
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+		client.Auth.Token = token.Value
 
 		return client, nil
 	}
