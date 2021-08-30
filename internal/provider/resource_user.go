@@ -8,33 +8,34 @@ import (
 	"strconv"
 )
 
-func resourceTeamCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceUserCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*api.Client)
 
 	var diags diag.Diagnostics
 
-	team := api.NewTeam{
+	user := api.NewUser{
 		Name:        d.Get("name").(string),
 		Email:       d.Get("email").(string),
 		Password:    d.Get("password").(string),
 		Website:     d.Get("website").(string),
 		Affiliation: d.Get("affiliation").(string),
 		Country:     d.Get("country").(string),
+		Type:        d.Get("type").(string),
+		Verified:    d.Get("verified").(bool),
 		Hidden:      d.Get("hidden").(bool),
 		Banned:      d.Get("banned").(bool),
 	}
 
-	newTeam, err := client.CreateTeam(team)
+	newUser, err := client.CreateUser(user)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.Itoa(int(newTeam.Id)))
-	err = d.Set("members", newTeam.Members)
+	d.SetId(strconv.Itoa(int(newUser.Id)))
 	if err != nil {
 		return nil
 	}
-	err = d.Set("fields", newTeam.Fields)
+	err = d.Set("fields", newUser.Fields)
 	if err != nil {
 		return nil
 	}
@@ -42,7 +43,7 @@ func resourceTeamCreate(ctx context.Context, d *schema.ResourceData, meta interf
 	return diags
 }
 
-func resourceTeamRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*api.Client)
 
 	var diags diag.Diagnostics
@@ -53,81 +54,91 @@ func resourceTeamRead(ctx context.Context, d *schema.ResourceData, meta interfac
 	if err != nil {
 		return nil
 	}
-	team, err := client.GetTeam(uint(intId))
+	user, err := client.GetUser(uint(intId))
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.Itoa(int(team.Id)))
+	d.SetId(strconv.Itoa(int(user.Id)))
 
 	return diags
 }
 
-func resourceTeamUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*api.Client)
 
 	var diags diag.Diagnostics
 
 	id := d.Id()
 
-	team := new(api.NewTeam)
 	intId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil
 	}
-
-	currentTeam, err := client.GetTeam(uint(intId))
+	currentUser, err := client.GetUser(uint(intId))
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	team.Password = d.Get("password").(string)
+
+	user := new(api.NewUser)
+	user.Password = d.Get("password").(string)
 	if d.HasChange("name") {
-		team.Name = d.Get("name").(string)
+		user.Name = d.Get("name").(string)
 	} else {
-		team.Name = currentTeam.Name
+		user.Name = currentUser.Name
 	}
 	if d.HasChange("email") {
-		team.Email = d.Get("email").(string)
+		user.Email = d.Get("email").(string)
 	} else {
-		team.Email = currentTeam.Email
+		user.Email = currentUser.Email
 	}
 	if d.HasChange("website") {
-		team.Website = d.Get("website").(string)
+		user.Website = d.Get("website").(string)
 	} else {
-		team.Website = currentTeam.Website
+		user.Website = currentUser.Website
 	}
 	if d.HasChange("affiliation") {
-		team.Affiliation = d.Get("affiliation").(string)
+		user.Affiliation = d.Get("affiliation").(string)
 	} else {
-		team.Affiliation = currentTeam.Affiliation
+		user.Affiliation = currentUser.Affiliation
 	}
 	if d.HasChange("country") {
-		team.Country = d.Get("country").(string)
+		user.Country = d.Get("country").(string)
 	} else {
-		team.Country = currentTeam.Country
+		user.Country = currentUser.Country
+	}
+	if d.HasChange("verified") {
+		user.Verified = d.Get("verified").(bool)
+	} else {
+		user.Verified = currentUser.Verified
 	}
 	if d.HasChange("hidden") {
-		team.Hidden = d.Get("hidden").(bool)
+		user.Hidden = d.Get("hidden").(bool)
 	} else {
-		team.Hidden = currentTeam.Hidden
+		user.Hidden = currentUser.Hidden
 	}
 	if d.HasChange("banned") {
-		team.Banned = d.Get("banned").(bool)
+		user.Banned = d.Get("banned").(bool)
 	} else {
-		team.Banned = currentTeam.Banned
+		user.Banned = currentUser.Banned
+	}
+	if d.HasChange("type") {
+		user.Type = d.Get("type").(string)
+	} else {
+		user.Type = currentUser.Type
 	}
 
-	updatedTeam, err := client.UpdateTeam(uint(intId), *team)
+	updatedUser, err := client.UpdateUser(uint(intId), *user)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.Itoa(int(updatedTeam.Id)))
+	d.SetId(strconv.Itoa(int(updatedUser.Id)))
 
 	return diags
 }
 
-func resourceTeamDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceUserDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*api.Client)
 
 	id := d.Id()
@@ -138,7 +149,7 @@ func resourceTeamDelete(ctx context.Context, d *schema.ResourceData, meta interf
 	if err != nil {
 		return nil
 	}
-	err = client.DeleteTeam(uint(intId))
+	err = client.DeleteUser(uint(intId))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -146,13 +157,13 @@ func resourceTeamDelete(ctx context.Context, d *schema.ResourceData, meta interf
 	return diags
 }
 
-func resourceTeam() *schema.Resource {
+func resourceUser() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Get details of a teams.",
-		CreateContext: resourceTeamCreate,
-		ReadContext:   resourceTeamRead,
-		UpdateContext: resourceTeamUpdate,
-		DeleteContext: resourceTeamDelete,
+		Description:   "Get details of a user.",
+		CreateContext: resourceUserCreate,
+		ReadContext:   resourceUserRead,
+		UpdateContext: resourceUserUpdate,
+		DeleteContext: resourceUserDelete,
 		Schema: map[string]*schema.Schema{
 			"id": &schema.Schema{
 				Type:     schema.TypeString,
@@ -188,11 +199,6 @@ func resourceTeam() *schema.Resource {
 			},
 			"banned": &schema.Schema{
 				Type:     schema.TypeBool,
-				Computed: true,
-			},
-			"captain_id": &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true,
 				Optional: true,
 			},
 			"bracket": &schema.Schema{
@@ -210,13 +216,6 @@ func resourceTeam() *schema.Resource {
 				Computed: true,
 				Optional: true,
 			},
-			"members": &schema.Schema{
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeInt,
-				},
-			},
 			"created": &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
@@ -227,6 +226,19 @@ func resourceTeam() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+			},
+			"verified": &schema.Schema{
+				Type:     schema.TypeBool,
+				Computed: true,
+			},
+			"type": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"team_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Computed: true,
+				Optional: true,
 			},
 		},
 	}

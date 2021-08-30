@@ -113,7 +113,7 @@ func (client *Client) UpdateTeam(id uint, team NewTeam) (*Team, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("PATCH", fmt.Sprintf("%s/api/v1/teams/%d", id, client.HostUrl), strings.NewReader(string(rb)))
+	req, err := http.NewRequest("PATCH", fmt.Sprintf("%s/api/v1/teams/%d", client.HostUrl, id), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}

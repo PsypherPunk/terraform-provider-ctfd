@@ -72,15 +72,26 @@ output "challenges" {
 
 ```hcl
 resource "ctfd_team" "first_team" {
-  name = "First Team"
-  email = "first.team@example.com"
+  name     = "First Team"
+  email    = "first.team@example.com"
   password = "pass"
+}
+```
+
+- a [Resource](https://www.terraform.io/docs/language/resources/index.html) for
+  *Users*:
+
+```hcl
+resource "ctfd_user" "first_user" {
+  name     = "First User"
+  email    = "first.user@example.com"
+  password = "pass"
+  type     = "user"
 }
 ```
 
 ### TODO
 
-- a Resource for *Users*.
 - a Resource for team-membership (i.e. a mapping between *Teams* and *Users*.)
 - additional config. for sending emails via CTFd.
 - distinguish between a CTFd instance as a *Data Source* (one already

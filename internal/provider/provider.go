@@ -50,6 +50,7 @@ func New(version string) func() *schema.Provider {
 			},
 			ResourcesMap: map[string]*schema.Resource{
 				"ctfd_team": resourceTeam(),
+				"ctfd_user": resourceUser(),
 			},
 		}
 
