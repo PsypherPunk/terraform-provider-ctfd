@@ -55,8 +55,9 @@ provider "ctfd" {
 }
 ```
 
-- the only thing implemented are the *Challenges* as a
-  [Data Source](https://www.terraform.io/docs/language/data-sources/index.html).
+- the only thing implemented are
+  - the *Challenges* as a
+    [Data Source](https://www.terraform.io/docs/language/data-sources/index.html).
 
 ```hcl
 data "ctfd_challenges" "challenges" {}
@@ -65,6 +66,25 @@ output "challenges" {
   value = data.ctfd_challenges.challenges
 }
 ```
+
+- a [Resource](https://www.terraform.io/docs/language/resources/index.html) for
+  *Teams*:
+
+```hcl
+resource "ctfd_team" "first_team" {
+  name = "First Team"
+  email = "first.team@example.com"
+  password = "pass"
+}
+```
+
+### TODO
+
+- a Resource for *Users*.
+- a Resource for team-membership (i.e. a mapping between *Teams* and *Users*.)
+- additional config. for sending emails via CTFd.
+- distinguish between a CTFd instance as a *Data Source* (one already
+  configured) and one as a *Resource* (to be configured.)
 
 ## Developing the Provider
 
