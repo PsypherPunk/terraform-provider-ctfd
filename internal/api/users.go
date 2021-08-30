@@ -22,19 +22,6 @@ type NewUser struct {
 	Verified    bool   `json:"verified"`
 }
 
-// UpdateUser - fields required when updating a user (password cannot be updated.)
-type UpdateUser struct {
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	Website     string `json:"website"`
-	Affiliation string `json:"affiliation"`
-	Country     string `json:"country"`
-	Hidden      bool   `json:"hidden"`
-	Banned      bool   `json:"banned"`
-	Type        string `json:"type"`
-	Verified    bool   `json:"verified"`
-}
-
 // User - fields as returned from the CTFd API
 type User struct {
 	Id          uint     `json:"id"`

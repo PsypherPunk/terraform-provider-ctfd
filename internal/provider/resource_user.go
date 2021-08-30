@@ -73,60 +73,20 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, meta interf
 
 	intId, err := strconv.Atoi(id)
 	if err != nil {
-		return nil
-	}
-	currentUser, err := client.GetUser(uint(intId))
-	if err != nil {
 		return diag.FromErr(err)
 	}
 
 	user := new(api.NewUser)
 	user.Password = d.Get("password").(string)
-	if d.HasChange("name") {
-		user.Name = d.Get("name").(string)
-	} else {
-		user.Name = currentUser.Name
-	}
-	if d.HasChange("email") {
-		user.Email = d.Get("email").(string)
-	} else {
-		user.Email = currentUser.Email
-	}
-	if d.HasChange("website") {
-		user.Website = d.Get("website").(string)
-	} else {
-		user.Website = currentUser.Website
-	}
-	if d.HasChange("affiliation") {
-		user.Affiliation = d.Get("affiliation").(string)
-	} else {
-		user.Affiliation = currentUser.Affiliation
-	}
-	if d.HasChange("country") {
-		user.Country = d.Get("country").(string)
-	} else {
-		user.Country = currentUser.Country
-	}
-	if d.HasChange("verified") {
-		user.Verified = d.Get("verified").(bool)
-	} else {
-		user.Verified = currentUser.Verified
-	}
-	if d.HasChange("hidden") {
-		user.Hidden = d.Get("hidden").(bool)
-	} else {
-		user.Hidden = currentUser.Hidden
-	}
-	if d.HasChange("banned") {
-		user.Banned = d.Get("banned").(bool)
-	} else {
-		user.Banned = currentUser.Banned
-	}
-	if d.HasChange("type") {
-		user.Type = d.Get("type").(string)
-	} else {
-		user.Type = currentUser.Type
-	}
+	user.Name = d.Get("name").(string)
+	user.Email = d.Get("email").(string)
+	user.Website = d.Get("website").(string)
+	user.Affiliation = d.Get("affiliation").(string)
+	user.Country = d.Get("country").(string)
+	user.Verified = d.Get("verified").(bool)
+	user.Hidden = d.Get("hidden").(bool)
+	user.Banned = d.Get("banned").(bool)
+	user.Type = d.Get("type").(string)
 
 	updatedUser, err := client.UpdateUser(uint(intId), *user)
 	if err != nil {

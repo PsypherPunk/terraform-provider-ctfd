@@ -70,52 +70,20 @@ func resourceTeamUpdate(ctx context.Context, d *schema.ResourceData, meta interf
 
 	id := d.Id()
 
-	team := new(api.NewTeam)
 	intId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil
 	}
 
-	currentTeam, err := client.GetTeam(uint(intId))
-	if err != nil {
-		return diag.FromErr(err)
-	}
+	team := new(api.NewTeam)
 	team.Password = d.Get("password").(string)
-	if d.HasChange("name") {
-		team.Name = d.Get("name").(string)
-	} else {
-		team.Name = currentTeam.Name
-	}
-	if d.HasChange("email") {
-		team.Email = d.Get("email").(string)
-	} else {
-		team.Email = currentTeam.Email
-	}
-	if d.HasChange("website") {
-		team.Website = d.Get("website").(string)
-	} else {
-		team.Website = currentTeam.Website
-	}
-	if d.HasChange("affiliation") {
-		team.Affiliation = d.Get("affiliation").(string)
-	} else {
-		team.Affiliation = currentTeam.Affiliation
-	}
-	if d.HasChange("country") {
-		team.Country = d.Get("country").(string)
-	} else {
-		team.Country = currentTeam.Country
-	}
-	if d.HasChange("hidden") {
-		team.Hidden = d.Get("hidden").(bool)
-	} else {
-		team.Hidden = currentTeam.Hidden
-	}
-	if d.HasChange("banned") {
-		team.Banned = d.Get("banned").(bool)
-	} else {
-		team.Banned = currentTeam.Banned
-	}
+	team.Name = d.Get("name").(string)
+	team.Email = d.Get("email").(string)
+	team.Website = d.Get("website").(string)
+	team.Affiliation = d.Get("affiliation").(string)
+	team.Country = d.Get("country").(string)
+	team.Hidden = d.Get("hidden").(bool)
+	team.Banned = d.Get("banned").(bool)
 
 	updatedTeam, err := client.UpdateTeam(uint(intId), *team)
 	if err != nil {
