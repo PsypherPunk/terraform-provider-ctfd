@@ -90,9 +90,19 @@ resource "ctfd_user" "first_user" {
 }
 ```
 
+- a [Resource](https://www.terraform.io/docs/language/resources/index.html) for
+  *Membership*:
+
+```hcl
+resource "ctfd_user_team_membership" "first_user" {
+  team_id = ctfd_team.first_team.id
+  user_id = ctfd_user.first_user.id
+}
+```
+
 ### TODO
 
-- a Resource for team-membership (i.e. a mapping between *Teams* and *Users*.)
+- Resource for tokens? Stop creating one for every run!
 - additional config. for sending emails via CTFd.
 - distinguish between a CTFd instance as a *Data Source* (one already
   configured) and one as a *Resource* (to be configured.)

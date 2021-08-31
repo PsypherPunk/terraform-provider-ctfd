@@ -40,7 +40,7 @@ func New(version string) func() *schema.Provider {
 				},
 				"url": &schema.Schema{
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 					Description: "Base URL of CTFd instance",
 				},
 			},
@@ -49,8 +49,9 @@ func New(version string) func() *schema.Provider {
 				"ctfd_teams":      dataSourceTeams(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
-				"ctfd_team": resourceTeam(),
-				"ctfd_user": resourceUser(),
+				"ctfd_team":                 resourceTeam(),
+				"ctfd_user":                 resourceUser(),
+				"ctfd_user_team_membership": resourceUserTeamMembership(),
 			},
 		}
 

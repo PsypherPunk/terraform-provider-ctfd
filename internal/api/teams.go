@@ -80,6 +80,27 @@ func (client *Client) GetTeam(id uint) (*Team, error) {
 	return team, nil
 }
 
+// GetTeamMemberships - Returns memberships of a team
+func (client *Client) GetTeamMemberships(id uint) (*[]uint, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/teams/%d/members", client.HostUrl, id), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := client.DoApiRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	members := new([]uint)
+	err = json.Unmarshal(*body, &members)
+	if err != nil {
+		return nil, err
+	}
+
+	return members, nil
+}
+
 // CreateTeam - create a new team
 func (client *Client) CreateTeam(team NewTeam) (*Team, error) {
 	rb, err := json.Marshal(team)
