@@ -24,6 +24,7 @@ Get details of a teams.
 ### Optional
 
 - **affiliation** (String)
+- **banned** (Boolean)
 - **bracket** (String)
 - **captain_id** (Number)
 - **country** (String)
@@ -34,7 +35,6 @@ Get details of a teams.
 
 ### Read-Only
 
-- **banned** (Boolean)
 - **created** (String)
 - **fields** (List of String)
 - **id** (String) The ID of this resource.

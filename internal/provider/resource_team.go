@@ -156,7 +156,7 @@ func resourceTeam() *schema.Resource {
 			},
 			"banned": &schema.Schema{
 				Type:     schema.TypeBool,
-				Computed: true,
+				Optional: true,
 			},
 			"captain_id": &schema.Schema{
 				Type:     schema.TypeInt,

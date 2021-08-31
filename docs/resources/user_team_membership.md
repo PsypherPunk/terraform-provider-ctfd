@@ -20,8 +20,8 @@ Get details of a User/Team Membership.
 - **team_id** (Number)
 - **user_id** (Number)
 
-### Optional
+### Read-Only
 
-- **id** (String) The ID of this resource.
+- **id** (Number) The ID of this resource.
 
 

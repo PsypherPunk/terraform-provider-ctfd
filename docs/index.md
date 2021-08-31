@@ -26,8 +26,5 @@ provider "ctfd" {
 ### Required
 
 - **password** (String) Admin. password
-- **username** (String) Admin. username
-
-### Optional
-
 - **url** (String) Base URL of CTFd instance
+- **username** (String) Admin. username

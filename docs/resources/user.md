@@ -31,7 +31,7 @@ Get details of a user.
 - **hidden** (Boolean)
 - **oauth_id** (String)
 - **secret** (String)
-- **team_id** (Number)
+- **verified** (Boolean)
 - **website** (String)
 
 ### Read-Only
@@ -39,6 +39,6 @@ Get details of a user.
 - **created** (String)
 - **fields** (List of String)
 - **id** (String) The ID of this resource.
-- **verified** (Boolean)
+- **team_id** (Number)
 
 

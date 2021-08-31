@@ -189,7 +189,7 @@ func resourceUser() *schema.Resource {
 			},
 			"verified": &schema.Schema{
 				Type:     schema.TypeBool,
-				Computed: true,
+				Optional: true,
 			},
 			"type": &schema.Schema{
 				Type:     schema.TypeString,
@@ -198,7 +198,6 @@ func resourceUser() *schema.Resource {
 			"team_id": &schema.Schema{
 				Type:     schema.TypeInt,
 				Computed: true,
-				Optional: true,
 			},
 		},
 	}
