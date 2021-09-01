@@ -22,6 +22,6 @@ Get details of a User/Team Membership.
 
 ### Read-Only
 
-- **id** (Number) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 

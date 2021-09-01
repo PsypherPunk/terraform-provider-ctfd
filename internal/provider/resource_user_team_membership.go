@@ -126,7 +126,7 @@ func resourceUserTeamMembership() *schema.Resource {
 		DeleteContext: resourceUserTeamMembershipDelete,
 		Schema: map[string]*schema.Schema{
 			"id": &schema.Schema{
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"user_id": &schema.Schema{

@@ -102,7 +102,7 @@ resource "ctfd_user_team_membership" "first_user" {
 
 ### TODO
 
-- Resource for tokens? Stop creating one for every run!
+- allow CTFd to be configured via a file-upload (à la OWASP Juice Shop.)
 - additional config. for sending emails via CTFd.
 - distinguish between a CTFd instance as a *Data Source* (one already
   configured) and one as a *Resource* (to be configured.)

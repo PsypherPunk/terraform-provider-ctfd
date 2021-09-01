@@ -83,8 +83,7 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 			return nil, diag.FromErr(err)
 		}
 
-		// TODO: check-if-exists?
-		token, err := client.CreateToken()
+		token, err := client.GetOrCreateToken()
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}

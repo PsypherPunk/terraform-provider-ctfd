@@ -18,24 +18,76 @@ type Token struct {
 }
 
 // GetTokens - get token objects in bulk
-func (client *Client) GetTokens() (interface{}, error) {
+func (client *Client) GetTokens() (*[]Token, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/tokens", client.HostUrl), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := client.DoApiRequest(req)
+	err = client.setNonce("/settings")
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("CSRF-Token", client.Auth.Nonce)
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := client.HttpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	tokens := make([]map[string]interface{}, 0)
-	err = json.Unmarshal(*body, &tokens)
+	apiResponse := new(ApiResponse)
+	err = json.NewDecoder(res.Body).Decode(apiResponse)
+	defer res.Body.Close()
+	if res.StatusCode != 200 || !apiResponse.Success {
+		return nil, errors.New(fmt.Sprintf("token generation failed: %s", apiResponse.Message))
+	}
+
+	tokens := new([]Token)
+	err = json.Unmarshal(*apiResponse.Data, &tokens)
 	if err != nil {
 		return nil, err
 	}
 
 	return tokens, nil
+}
+
+// GetOrCreateToken - re-use or create a token object
+func (client *Client) GetOrCreateToken() (*Token, error) {
+	tokens, err := client.GetTokens()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, partialToken := range *tokens {
+		res, err := client.HttpClient.Get(fmt.Sprintf("%s/api/v1/tokens/%d", client.HostUrl, partialToken.Id))
+		if err != nil {
+			return nil, err
+		}
+		apiResponse := new(ApiResponse)
+		err = json.NewDecoder(res.Body).Decode(apiResponse)
+		defer res.Body.Close()
+		if res.StatusCode != 200 || !apiResponse.Success {
+			return nil, errors.New(fmt.Sprintf("token generation failed: %s", apiResponse.Message))
+		}
+
+		fullToken := new(Token)
+		err = json.Unmarshal(*apiResponse.Data, &fullToken)
+		if err != nil {
+			return nil, err
+		}
+
+		if fullToken.UserId == 1 {
+			return &partialToken, nil
+		}
+	}
+
+	token, err := client.CreateToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
 }
 
 // CreateToken - create a token object
