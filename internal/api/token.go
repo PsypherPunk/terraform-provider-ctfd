@@ -78,7 +78,7 @@ func (client *Client) GetOrCreateToken() (*Token, error) {
 		}
 
 		if fullToken.UserId == 1 {
-			return &partialToken, nil
+			return fullToken, nil
 		}
 	}
 

@@ -49,6 +49,7 @@ func New(version string) func() *schema.Provider {
 				"ctfd_teams":      dataSourceTeams(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
+				"ctfd_setup":                resourceCtfdSetup(),
 				"ctfd_team":                 resourceTeam(),
 				"ctfd_user":                 resourceUser(),
 				"ctfd_user_team_membership": resourceUserTeamMembership(),
@@ -74,20 +75,18 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 		}
 
 		err = client.CheckSetup()
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
+		if err == nil {
+			err = client.SignIn()
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
 
-		err = client.SignIn()
-		if err != nil {
-			return nil, diag.FromErr(err)
+			token, err := client.GetOrCreateToken()
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
+			client.Auth.Token = token.Value
 		}
-
-		token, err := client.GetOrCreateToken()
-		if err != nil {
-			return nil, diag.FromErr(err)
-		}
-		client.Auth.Token = token.Value
 
 		return client, nil
 	}
