@@ -53,7 +53,7 @@ type ApiResponse struct {
 func NewClient(host, username, password *string, userAgent *string) (*Client, error) {
 	c := Client{
 		HttpClient: &http.Client{
-			Timeout: 5 * time.Second,
+			Timeout: 30 * time.Second,
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
 				return http.ErrUseLastResponse
 			},
