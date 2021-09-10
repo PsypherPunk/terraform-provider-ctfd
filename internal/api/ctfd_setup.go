@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -21,7 +20,7 @@ type configData struct {
 	Key   string `json:"key"`
 }
 
-// CtfdSetup - fields as returned from the CTFd API
+// CtfdSetup - `ctfd_setup` resource
 type CtfdSetup struct {
 	Name              string `json:"name"`
 	Description       string `json:"description"`
@@ -29,7 +28,7 @@ type CtfdSetup struct {
 	ConfigurationPath string `json:"configuration_path"`
 }
 
-// GetCtfdSetup - Returns details of a user
+// GetCtfdSetup - Retrieve details of the CTFd setup
 func (client *Client) GetCtfdSetup() (*CtfdSetup, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/configs", client.HostUrl), nil)
 	if err != nil {
@@ -80,16 +79,11 @@ func doSetup(client *Client, setup CtfdSetup) error {
 		return err
 	}
 	if res.StatusCode != 302 {
-		body, err := ioutil.ReadAll(res.Body)
-		fmt.Println(body)
-		defer res.Body.Close()
+		msg, err := GetErrorFromHtml(*res)
 		if err != nil {
 			return err
 		}
-		location := res.Header.Get("Location")
-		if location != client.HostUrl {
-			return errors.New("unable to setup; not redirected to /")
-		}
+		return errors.New(fmt.Sprintf("%s: unable to setup.", *msg))
 	}
 
 	return nil
