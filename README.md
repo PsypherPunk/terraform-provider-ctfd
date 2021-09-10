@@ -10,26 +10,28 @@ demo. API client.
 
 ## Requirements
 
--	[Terraform](https://www.terraform.io/downloads.html) >= 0.13.x
--	[Go](https://golang.org/doc/install) >= 1.15
+- [Terraform](https://www.terraform.io/downloads.html) >= 0.13.x
+- [Go](https://golang.org/doc/install) >= 1.15
 
 ## Building The Provider
 
 1. Clone the repository
-1. Enter the repository directory
-1. Build the provider using the Go `install` command: 
+2. Enter the repository directory
+3. Build the provider using the Go `install` command:
+
 ```sh
-$ go install
+go install
 ```
 
 ## Adding Dependencies
 
 This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
-Please see the Go documentation for the most up to date information about using Go modules.
+Please see the Go documentation for the most up to date information about using
+Go modules.
 
 To add a new dependency `github.com/PsypherPunk/ctfd` to your Terraform provider:
 
-```
+```sh
 go get github.com/PsypherPunk/ctfd
 go mod tidy
 ```
@@ -38,14 +40,9 @@ Then commit the changes to `go.mod` and `go.sum`.
 
 ## Using the provider
 
-To say that these are early days ain't the half of it. I've never written a
-Terraform provider before and Go and I don't really get on.
-
-Nevertheless, so far:
-
-- the provider assumes a running [CTFd](https://github.com/CTFd/CTFd) instance
-  with the Admin. user already created: this is used to interact with the CTFd
-  instance:
+The provider assumes a running [CTFd](https://github.com/CTFd/CTFd) instance
+with the Admin. user already created: this is used to interact with the CTFd
+instance:
 
 ```hcl
 provider "ctfd" {
@@ -55,9 +52,9 @@ provider "ctfd" {
 }
 ```
 
-- the only thing implemented are
-  - the *Challenges* as a
-    [Data Source](https://www.terraform.io/docs/language/data-sources/index.html).
+### [Data Sources](https://www.terraform.io/docs/language/data-sources/index.html)
+
+#### Challenges
 
 ```hcl
 data "ctfd_challenges" "challenges" {}
@@ -67,8 +64,23 @@ output "challenges" {
 }
 ```
 
-- a [Resource](https://www.terraform.io/docs/language/resources/index.html) for
-  *Teams*:
+### [Resources](https://www.terraform.io/docs/language/resources/index.html)
+
+#### Setup
+
+i.e. the initial configuration of the Admin. user and import of challenges from
+a [`juice-shop-ctf`](https://github.com/juice-shop/juice-shop-ctf)) instance:
+
+```hcl
+resource "ctfd_setup" "setup" {
+  name               = "CTFd Instance"
+  description        = "This is a test CTFd intance."
+  admin_email        = "ctfd.admin@example.com"
+  configuration_path = "/tmp/juice-shop-ctf-export.zip"
+}
+```
+
+#### Teams
 
 ```hcl
 resource "ctfd_team" "first_team" {
@@ -78,8 +90,7 @@ resource "ctfd_team" "first_team" {
 }
 ```
 
-- a [Resource](https://www.terraform.io/docs/language/resources/index.html) for
-  *Users*:
+#### Users
 
 ```hcl
 resource "ctfd_user" "first_user" {
@@ -90,8 +101,7 @@ resource "ctfd_user" "first_user" {
 }
 ```
 
-- a [Resource](https://www.terraform.io/docs/language/resources/index.html) for
-  *Membership*:
+#### Membership
 
 ```hcl
 resource "ctfd_user_team_membership" "first_user" {
@@ -99,13 +109,6 @@ resource "ctfd_user_team_membership" "first_user" {
   user_id = ctfd_user.first_user.id
 }
 ```
-
-### TODO
-
-- allow CTFd to be configured via a file-upload (à la OWASP Juice Shop.)
-- additional config. for sending emails via CTFd.
-- distinguish between a CTFd instance as a *Data Source* (one already
-  configured) and one as a *Resource* (to be configured.)
 
 ## Developing the Provider
 
@@ -123,5 +126,5 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 *Note:* Acceptance tests create real resources, and often cost money to run.
 
 ```sh
-$ make testacc
+make testacc
 ```
