@@ -15,4 +15,3 @@ resource "ctfd_setup" "setup" {
     use_ssl      = false
   }
 }
-

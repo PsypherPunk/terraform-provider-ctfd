@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -52,21 +53,41 @@ func (client *Client) GetCtfdSetup() (*CtfdSetup, error) {
 	}
 
 	ctfdSetup := new(CtfdSetup)
+	emailConfig := new(EmailConfig)
 	config := new([]configData)
 	err = json.Unmarshal(*body, &config)
 	if err != nil {
 		return nil, err
 	}
 	for _, value := range *config {
-		if value.Key == "ctf_name" {
+		switch value.Key {
+		case "ctf_name":
 			ctfdSetup.Name = value.Value
-		}
-		if value.Key == "ctf_description" {
+		case "ctf_description":
 			ctfdSetup.Description = value.Value
+		case "mail_username":
+			emailConfig.Username = value.Value
+		case "mail_password":
+			emailConfig.Password = value.Value
+		case "mailfrom_addr":
+			emailConfig.FromAddress = value.Value
+		case "mail_server":
+			emailConfig.Server = value.Value
+		case "mail_port":
+			i, err := strconv.Atoi(value.Value)
+			if err != nil {
+				return nil, err
+			}
+			emailConfig.Port = i
+		case "mail_useauth":
+			emailConfig.UseAuth = value.Value == "1"
+		case "mail_ssl":
+			emailConfig.UseSsl = value.Value == "1"
+		case "mail_tls":
+			emailConfig.UseTls = value.Value == "1"
 		}
 	}
-
-	// TODO: get email config.
+	ctfdSetup.Email = emailConfig
 
 	return ctfdSetup, nil
 }
