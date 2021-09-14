@@ -96,7 +96,7 @@ func (client *Client) DoApiRequest(req *http.Request) (*json.RawMessage, error) 
 	}
 
 	if !result.Success {
-		return nil, fmt.Errorf("success: %s", result.Success)
+		return nil, fmt.Errorf("success: %v", result.Success)
 	}
 
 	return result.Data, err

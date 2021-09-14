@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -38,9 +37,12 @@ func (client *Client) GetTokens() (*[]Token, error) {
 
 	apiResponse := new(ApiResponse)
 	err = json.NewDecoder(res.Body).Decode(apiResponse)
+	if err != nil {
+		return nil, err
+	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 || !apiResponse.Success {
-		return nil, errors.New(fmt.Sprintf("token generation failed: %s", apiResponse.Message))
+		return nil, fmt.Errorf("token generation failed: %s", apiResponse.Message)
 	}
 
 	tokens := new([]Token)
@@ -66,9 +68,12 @@ func (client *Client) GetOrCreateToken() (*Token, error) {
 		}
 		apiResponse := new(ApiResponse)
 		err = json.NewDecoder(res.Body).Decode(apiResponse)
+		if err != nil {
+			return nil, err
+		}
 		defer res.Body.Close()
 		if res.StatusCode != 200 || !apiResponse.Success {
-			return nil, errors.New(fmt.Sprintf("token generation failed: %s", apiResponse.Message))
+			return nil, fmt.Errorf("token generation failed: %s", apiResponse.Message)
 		}
 
 		fullToken := new(Token)
@@ -113,7 +118,7 @@ func (client *Client) CreateToken() (newToken *Token, err error) {
 	err = json.NewDecoder(res.Body).Decode(apiResponse)
 	defer res.Body.Close()
 	if res.StatusCode != 200 || !apiResponse.Success {
-		return nil, errors.New(fmt.Sprintf("token generation failed: %s", apiResponse.Message))
+		return nil, fmt.Errorf("token generation failed: %s", apiResponse.Message)
 	}
 
 	err = json.Unmarshal(*apiResponse.Data, &newToken)

@@ -9,7 +9,7 @@ import (
 )
 
 // GetErrorFromHtml - retrieve error text from CTFd HTML
-func GetErrorFromHtml(res http.Response) (*string, error){
+func GetErrorFromHtml(res http.Response) (*string, error) {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err

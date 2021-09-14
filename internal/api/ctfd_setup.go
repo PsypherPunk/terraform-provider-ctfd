@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -11,7 +10,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 type configData struct {
@@ -83,7 +81,7 @@ func doSetup(client *Client, setup CtfdSetup) error {
 		if err != nil {
 			return err
 		}
-		return errors.New(fmt.Sprintf("%s: unable to setup.", *msg))
+		return fmt.Errorf("%s: unable to setup", *msg)
 	}
 
 	return nil
@@ -113,6 +111,9 @@ func importConfiguration(client *Client, setup CtfdSetup) error {
 		return err
 	}
 	_, err = io.Copy(part, file)
+	if err != nil {
+		return err
+	}
 	err = writer.Close()
 	if err != nil {
 		return err
@@ -130,15 +131,11 @@ func importConfiguration(client *Client, setup CtfdSetup) error {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 302 {
-		body, err := io.ReadAll(res.Body)
+		msg, err := GetErrorFromHtml(*res)
 		if err != nil {
 			return err
 		}
-		fmt.Print(body)
-		location := res.Header.Get("Location")
-		if !strings.HasSuffix(location, "/admin/config") {
-			return errors.New("unable to setup; not redirected to /admin/config")
-		}
+		return fmt.Errorf("%s: unable to import config", *msg)
 	}
 
 	return nil
@@ -203,10 +200,11 @@ func (client *Client) DeleteCtfdSetup() error {
 		return err
 	}
 	if res.StatusCode != 302 {
-		location := res.Header.Get("Location")
-		if strings.HasSuffix(location, "/setup") {
-			return errors.New("unable to delete; not redirected to /setup")
+		msg, err := GetErrorFromHtml(*res)
+		if err != nil {
+			return err
 		}
+		return fmt.Errorf("%s: unable to reset", *msg)
 	}
 
 	return nil

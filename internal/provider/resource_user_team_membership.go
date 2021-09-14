@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -40,7 +39,13 @@ func resourceUserTeamMembershipRead(ctx context.Context, d *schema.ResourceData,
 	userId := ids[1]
 
 	teamIntId, err := strconv.Atoi(teamId)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	userIntId, err := strconv.Atoi(userId)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	members, err := client.GetTeamMemberships(uint(teamIntId))
 	if err != nil {
@@ -48,7 +53,7 @@ func resourceUserTeamMembershipRead(ctx context.Context, d *schema.ResourceData,
 	}
 
 	if !api.Contains(*members, uint(userIntId)) {
-		return diag.FromErr(errors.New(fmt.Sprintf("member %d not found in team %d", userIntId, teamIntId)))
+		return diag.FromErr(fmt.Errorf("member %d not found in team %d", userIntId, teamIntId))
 	}
 
 	d.SetId(id)
@@ -67,6 +72,9 @@ func resourceUserTeamMembershipUpdate(ctx context.Context, d *schema.ResourceDat
 	userId := ids[1]
 
 	teamIntId, err := strconv.Atoi(teamId)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	userIntId, err := strconv.Atoi(userId)
 	if err != nil {
 		return diag.FromErr(err)
@@ -104,6 +112,9 @@ func resourceUserTeamMembershipDelete(ctx context.Context, d *schema.ResourceDat
 	userId := ids[1]
 
 	teamIntId, err := strconv.Atoi(teamId)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	userIntId, err := strconv.Atoi(userId)
 	if err != nil {
 		return diag.FromErr(err)
