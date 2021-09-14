@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type configData struct {
@@ -18,12 +19,24 @@ type configData struct {
 	Key   string `json:"key"`
 }
 
+type EmailConfig struct {
+	Username    string `json:"mail_username"`
+	Password    string `json:"mail_password"`
+	FromAddress string `json:"mailfrom_addr"`
+	Server      string `json:"mail_server"`
+	Port        int    `json:"mail_port"`
+	UseAuth     bool   `json:"mail_useauth"`
+	UseTls      bool   `json:"mail_tls"`
+	UseSsl      bool   `json:"mail_ssl"`
+}
+
 // CtfdSetup - `ctfd_setup` resource
 type CtfdSetup struct {
-	Name              string `json:"name"`
-	Description       string `json:"description"`
-	AdminEmail        string `json:"admin_email"`
-	ConfigurationPath string `json:"configuration_path"`
+	Name              string       `json:"name"`
+	Description       string       `json:"description"`
+	AdminEmail        string       `json:"admin_email"`
+	ConfigurationPath string       `json:"configuration_path"`
+	Email             *EmailConfig `json:"email"`
 }
 
 // GetCtfdSetup - Retrieve details of the CTFd setup
@@ -52,6 +65,8 @@ func (client *Client) GetCtfdSetup() (*CtfdSetup, error) {
 			ctfdSetup.Description = value.Value
 		}
 	}
+
+	// TODO: get email config.
 
 	return ctfdSetup, nil
 }
@@ -141,6 +156,26 @@ func importConfiguration(client *Client, setup CtfdSetup) error {
 	return nil
 }
 
+// setupEmail - configure email services
+func setupEmail(client Client, emailConfig EmailConfig) error {
+	rb, err := json.Marshal(emailConfig)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PATCH", fmt.Sprintf("%s/api/v1/configs", client.HostUrl), strings.NewReader(string(rb)))
+	if err != nil {
+		return err
+	}
+
+	_, err = client.DoApiRequest(req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // CreateCtfdSetup - setup a new CTFd instance
 func (client *Client) CreateCtfdSetup(setup CtfdSetup) error {
 	// do initial setup
@@ -176,6 +211,13 @@ func (client *Client) CreateCtfdSetup(setup CtfdSetup) error {
 		return err
 	}
 	client.Auth.Token = token.Value
+
+	if setup.Email != nil {
+		err := setupEmail(*client, *setup.Email)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

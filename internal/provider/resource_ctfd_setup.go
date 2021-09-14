@@ -7,6 +7,27 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+func expandCtfdSetupEmailConfig(l []interface{}) *api.EmailConfig {
+	if len(l) == 0 {
+		return nil
+	}
+
+	m := l[0].(map[string]interface{})
+
+	emailConfig := &api.EmailConfig{
+		Username:    m["username"].(string),
+		Password:    m["password"].(string),
+		FromAddress: m["from_address"].(string),
+		Server:      m["server"].(string),
+		Port:        m["port"].(int),
+		UseAuth:     m["use_auth"].(bool),
+		UseTls:      m["use_tls"].(bool),
+		UseSsl:      m["use_ssl"].(bool),
+	}
+
+	return emailConfig
+}
+
 func resourceCtfdSetupCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*api.Client)
 
@@ -17,6 +38,10 @@ func resourceCtfdSetupCreate(ctx context.Context, d *schema.ResourceData, meta i
 		Description:       d.Get("description").(string),
 		AdminEmail:        d.Get("admin_email").(string),
 		ConfigurationPath: d.Get("configuration_path").(string),
+	}
+
+	if v, ok := d.GetOk("email"); ok {
+		setup.Email = expandCtfdSetupEmailConfig(v.([]interface{}))
 	}
 
 	err := client.CreateCtfdSetup(setup)
@@ -112,6 +137,48 @@ func resourceCtfdSetup() *schema.Resource {
 			"configuration_path": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+			},
+			"email": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"username": &schema.Schema{
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"password": &schema.Schema{
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"from_address": &schema.Schema{
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"server": &schema.Schema{
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"port": &schema.Schema{
+							Type:     schema.TypeInt,
+							Required: true,
+						},
+						"use_auth": &schema.Schema{
+							Type:     schema.TypeBool,
+							Optional: true,
+							Default:  false,
+						},
+						"use_tls": &schema.Schema{
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"use_ssl": &schema.Schema{
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
 			},
 		},
 	}
