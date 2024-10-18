@@ -3,11 +3,12 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"strconv"
-	"strings"
 )
 
 func resourceUserTeamMembershipCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -92,9 +93,6 @@ func resourceUserTeamMembershipUpdate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
 	d.SetId(fmt.Sprintf("%d.%d", newUserTeamMembership.TeamId, newUserTeamMembership.UserId))
 
@@ -136,15 +134,15 @@ func resourceUserTeamMembership() *schema.Resource {
 		UpdateContext: resourceUserTeamMembershipUpdate,
 		DeleteContext: resourceUserTeamMembershipDelete,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"user_id": &schema.Schema{
+			"user_id": {
 				Type:     schema.TypeInt,
 				Required: true,
 			},
-			"team_id": &schema.Schema{
+			"team_id": {
 				Type:     schema.TypeInt,
 				Required: true,
 			},

@@ -2,9 +2,10 @@ package provider
 
 import (
 	"context"
-	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"strconv"
 	"time"
+
+	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -34,64 +35,64 @@ func dataSourceTeams() *schema.Resource {
 		Description: "Get a list of the registered teams.",
 		ReadContext: dataSourceTeamsRead,
 		Schema: map[string]*schema.Schema{
-			"teams": &schema.Schema{
+			"teams": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
+						"id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"email": &schema.Schema{
+						"email": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"website": &schema.Schema{
+						"website": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"affiliation": &schema.Schema{
+						"affiliation": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"country": &schema.Schema{
+						"country": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"hidden": &schema.Schema{
+						"hidden": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"banned": &schema.Schema{
+						"banned": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"captain_id": &schema.Schema{
+						"captain_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 							Optional: true,
 						},
-						"bracket": &schema.Schema{
+						"bracket": {
 							Type:     schema.TypeString,
 							Computed: true,
 							Optional: true,
 						},
-						"secret": &schema.Schema{
+						"secret": {
 							Type:     schema.TypeString,
 							Computed: true,
 							Optional: true,
 						},
-						"oauth_id": &schema.Schema{
+						"oauth_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 							Optional: true,
 						},
-						"members": &schema.Schema{
+						"members": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Schema{
@@ -99,11 +100,11 @@ func dataSourceTeams() *schema.Resource {
 							},
 							MinItems: 0,
 						},
-						"created": &schema.Schema{
+						"created": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"fields": &schema.Schema{
+						"fields": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Schema{

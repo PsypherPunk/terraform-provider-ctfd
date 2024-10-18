@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -50,9 +51,6 @@ func resourceCtfdSetupCreate(ctx context.Context, d *schema.ResourceData, meta i
 	}
 
 	d.SetId(setup.Name)
-	if err != nil {
-		return nil
-	}
 
 	return diags
 }
@@ -118,62 +116,62 @@ func resourceCtfdSetup() *schema.Resource {
 		UpdateContext: resourceCtfdSetupUpdate,
 		DeleteContext: resourceCtfdSetupDelete,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"admin_email": &schema.Schema{
+			"admin_email": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"configuration_path": &schema.Schema{
+			"configuration_path": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"email": &schema.Schema{
+			"email": {
 				Type:     schema.TypeList,
 				Optional: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"username": &schema.Schema{
+						"username": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"password": &schema.Schema{
+						"password": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"from_address": &schema.Schema{
+						"from_address": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"server": &schema.Schema{
+						"server": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"port": &schema.Schema{
+						"port": {
 							Type:     schema.TypeInt,
 							Required: true,
 						},
-						"use_auth": &schema.Schema{
+						"use_auth": {
 							Type:     schema.TypeBool,
 							Optional: true,
 							Default:  false,
 						},
-						"use_tls": &schema.Schema{
+						"use_tls": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"use_ssl": &schema.Schema{
+						"use_ssl": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},

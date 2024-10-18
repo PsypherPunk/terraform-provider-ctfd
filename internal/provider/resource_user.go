@@ -2,10 +2,11 @@ package provider
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"strconv"
 )
 
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -32,9 +33,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, meta interf
 	}
 
 	d.SetId(strconv.Itoa(int(newUser.Id)))
-	if err != nil {
-		return nil
-	}
+
 	err = d.Set("fields", newUser.Fields)
 	if err != nil {
 		return nil
@@ -125,77 +124,77 @@ func resourceUser() *schema.Resource {
 		UpdateContext: resourceUserUpdate,
 		DeleteContext: resourceUserDelete,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
+			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"email": &schema.Schema{
+			"email": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"password": &schema.Schema{
+			"password": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"website": &schema.Schema{
+			"website": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"affiliation": &schema.Schema{
+			"affiliation": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"country": &schema.Schema{
+			"country": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"hidden": &schema.Schema{
+			"hidden": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"banned": &schema.Schema{
+			"banned": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"bracket": &schema.Schema{
+			"bracket": {
 				Type:     schema.TypeString,
 				Computed: true,
 				Optional: true,
 			},
-			"secret": &schema.Schema{
+			"secret": {
 				Type:     schema.TypeString,
 				Computed: true,
 				Optional: true,
 			},
-			"oauth_id": &schema.Schema{
+			"oauth_id": {
 				Type:     schema.TypeString,
 				Computed: true,
 				Optional: true,
 			},
-			"created": &schema.Schema{
+			"created": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"fields": &schema.Schema{
+			"fields": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
-			"verified": &schema.Schema{
+			"verified": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"team_id": &schema.Schema{
+			"team_id": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},

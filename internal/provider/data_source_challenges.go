@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/api"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -32,56 +33,56 @@ func dataSourceChallenges() *schema.Resource {
 		Description: "Get a list of the current challenges.",
 		ReadContext: dataSourceChallengesRead,
 		Schema: map[string]*schema.Schema{
-			"challenges": &schema.Schema{
+			"challenges": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
+						"id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"type": &schema.Schema{
+						"type": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"name": &schema.Schema{
+						"name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"value": &schema.Schema{
+						"value": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"solves": &schema.Schema{
+						"solves": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"solved_by_me": &schema.Schema{
+						"solved_by_me": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"category": &schema.Schema{
+						"category": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"tags": &schema.Schema{
+						"tags": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"value": &schema.Schema{
+									"value": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
 								},
 							},
 						},
-						"template": &schema.Schema{
+						"template": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"script": &schema.Schema{
+						"script": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},

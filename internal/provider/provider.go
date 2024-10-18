@@ -28,17 +28,17 @@ func New(version string) func() *schema.Provider {
 	return func() *schema.Provider {
 		p := &schema.Provider{
 			Schema: map[string]*schema.Schema{
-				"username": &schema.Schema{
+				"username": {
 					Type:        schema.TypeString,
 					Required:    true,
 					Description: "Admin. username",
 				},
-				"password": &schema.Schema{
+				"password": {
 					Type:        schema.TypeString,
 					Required:    true,
 					Description: "Admin. password",
 				},
-				"url": &schema.Schema{
+				"url": {
 					Type:        schema.TypeString,
 					Required:    true,
 					Description: "Base URL of CTFd instance",
