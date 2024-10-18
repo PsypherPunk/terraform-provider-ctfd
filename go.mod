@@ -1,6 +1,6 @@
 module github.com/PsypherPunk/terraform-provider-ctfd
 
-go 1.17
+go 1.23
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
