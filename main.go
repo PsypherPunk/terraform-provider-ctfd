@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"flag"
-	"log"
 
 	"github.com/PsypherPunk/terraform-provider-ctfd/internal/provider"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
@@ -37,10 +35,8 @@ func main() {
 	opts := &plugin.ServeOpts{ProviderFunc: provider.New(version)}
 
 	if debugMode {
-		err := plugin.Debug(context.Background(), "psypherpunk.io/ctfd/ctfd", opts)
-		if err != nil {
-			log.Fatal(err.Error())
-		}
+		opts.Debug = true
+		plugin.Serve(opts)
 		return
 	}
 
