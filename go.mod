@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/hashicorp/terraform-plugin-docs v0.23.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.38.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.38.1
 )
 
 require (
